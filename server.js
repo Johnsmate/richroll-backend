@@ -212,3 +212,40 @@ const PORT = process.env.PORT || 3001;
 server.listen(PORT, () => {
     console.log(`เซิร์ฟเวอร์รันที่พอร์ต ${PORT} สำเร็จแล้ว`);
 });
+
+const express = require('express');
+const http = require('http');
+const { Server } = require('socket.io');
+const cors = require('cors');
+
+const app = express();
+app.use(cors());
+
+const server = http.createServer(app);
+
+// ตั้งค่า Socket.io ให้รองรับการเชื่อมต่อจากภายนอก (รวมถึงเว็บ Netlify)
+const io = new Server(server, {
+    cors: {
+        origin: "*", // อนุญาตให้ทุก Domain เข้ามาเชื่อมต่อได้
+        methods: ["GET", "POST"]
+    }
+});
+
+// โครงสร้างระบบห้องเกมเศรษฐีของคุณ
+let rooms = {}; 
+
+io.on('connection', (socket) => {
+    console.log(`มีผู้เล่นเชื่อมต่อ: ${socket.id}`);
+
+    // --- (โค้ดระบบเกม, สร้างห้อง, จอยห้อง, ทอยลูกเต๋า เดิมของคุณทั้งหมดใส่ตรงนี้) ---
+    // ตัวอย่างเหตุการณ์พื้นฐาน:
+    socket.on('disconnect', () => {
+        console.log(`ผู้เล่นตัดการเชื่อมต่อ: ${socket.id}`);
+    });
+});
+
+// บรรทัดสำคัญ: เปลี่ยนจากล็อกพอร์ต 3001 มาเป็นระบบพอร์ตยืดหยุ่นสำหรับ Cloud Hosting
+const PORT = process.env.PORT || 3001;
+server.listen(PORT, () => {
+    console.log(`เซิร์ฟเวอร์รันที่พอร์ต ${PORT} สำเร็จแล้ว`);
+});
