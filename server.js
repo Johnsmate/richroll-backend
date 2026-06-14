@@ -2,9 +2,31 @@ const express = require('express');
 const http = require('http');
 const { Server } = require('socket.io');
 const cors = require('cors');
-
 const app = express();
 app.use(cors());
+
+app.use(cors({
+    origin: [
+        "https://richroll-frontend.netlify.app", // ใส่ URL หน้าบ้านของคุณที่นี่
+        "http://localhost:5173" // เก็บไว้เผื่อรันบนเครื่องตัวเอง
+    ],
+    methods: ["GET", "POST"],
+    credentials: true
+}));
+
+const http = require('http');
+const server = http.createServer(app);
+const { Server } = require('socket.io');
+
+const io = new Server(server, {
+    cors: {
+        origin: [
+            "https://richroll-frontend.netlify.app",
+            "http://localhost:5173"
+        ],
+        methods: ["GET", "POST"]
+    }
+});
 
 const server = http.createServer(app);
 const io = new Server(server, {
